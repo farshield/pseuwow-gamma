@@ -239,7 +239,14 @@ void RealmSession::_HandleRealmList(ByteBuffer& pkt)
     uint32 unk;
     uint16 len,count;
     uint8 cmd;
-    pkt >> cmd >> len >> unk >> count;
+ 
+    // REALM_LIST header
+    pkt >> cmd;
+    pkt >> len;
+
+    // beginning of realm listing
+    pkt >> unk;
+    pkt >> count;
 
     // no realm?
     if(count==0)
@@ -251,15 +258,23 @@ void RealmSession::_HandleRealmList(ByteBuffer& pkt)
     // readout realms
     for(uint8 i=0;i<count;i++)
     {
-        pkt >> _realms[i].icon;
-        pkt >> _realms[i].locked;
-        pkt >> _realms[i].color;
-        pkt >> _realms[i].name;
-        pkt >> _realms[i].addr_port;
+        pkt >> _realms[i].icon;             // realm type (this is second column in Cfg_Configs.dbc)
+        pkt >> _realms[i].locked;           // flags, if 0x01, then realm locked
+        pkt >> _realms[i].realmFlags;       // see enum RealmFlags
+        pkt >> _realms[i].name;             // name
+        pkt >> _realms[i].addr_port;        // address
         pkt >> _realms[i].population;
         pkt >> _realms[i].chars_here;
-        pkt >> _realms[i].timezone;
-        pkt >> _realms[i].unknown;
+        pkt >> _realms[i].timezone;         // realm category (Cfg_Categories.dbc)
+        pkt >> _realms[i].unknown;          // unk, may be realm number/id?
+
+        if (_realms[i].realmFlags & REALM_FLAG_SPECIFYBUILD)
+        {
+            pkt >> _realms[i].major_version;
+            pkt >> _realms[i].minor_version;
+            pkt >> _realms[i].bugfix_version;
+            pkt >> _realms[i]._build;
+        }
     }
 
     // the rest of the packet is not interesting

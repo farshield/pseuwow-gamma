@@ -604,11 +604,11 @@ void WorldSession::_HandleCharEnumOpcode(WorldPacket& recvPacket)
             recvPacket >> plr[i]._race;
             recvPacket >> plr[i]._class;
             recvPacket >> plr[i]._gender;
-            recvPacket >> plr[i]._bytes1;
-            recvPacket >> plr[i]._bytes2;
-            recvPacket >> plr[i]._bytes3;
-            recvPacket >> plr[i]._bytes4;
-            recvPacket >> plr[i]._bytesx;
+            recvPacket >> plr[i]._bytes1;                   // skin
+            recvPacket >> plr[i]._bytes2;                   // face
+            recvPacket >> plr[i]._bytes3;                   // hair style
+            recvPacket >> plr[i]._bytes4;                   // hair color
+            recvPacket >> plr[i]._bytesx;                   // facial hair
             recvPacket >> plr[i]._level;
             recvPacket >> plr[i]._zoneId;
             recvPacket >> plr[i]._mapId;
@@ -616,18 +616,32 @@ void WorldSession::_HandleCharEnumOpcode(WorldPacket& recvPacket)
             recvPacket >> plr[i]._y;
             recvPacket >> plr[i]._z;
             recvPacket >> plr[i]._guildId;
-            recvPacket >> plr[i]._flags;
-            recvPacket >> dummy32; // at_login_customize
-            recvPacket >> dummy8;
+            recvPacket >> plr[i]._flags;                    // character flags
+            recvPacket >> dummy32;                          // at_login_customize
+            recvPacket >> dummy8;                           // at_login_first
             recvPacket >> plr[i]._petInfoId;
             recvPacket >> plr[i]._petLevel;
             recvPacket >> plr[i]._petFamilyId;
-            for(unsigned int inv=0;inv<20;inv++)
+            for(unsigned int inv=0;inv<19;inv++)
             {
-                recvPacket >> plr[i]._items[inv].displayId >> plr[i]._items[inv].inventorytype >> dummy32;
+                recvPacket >> plr[i]._items[inv].displayId;
+                recvPacket >> plr[i]._items[inv].inventorytype;
+                recvPacket >> dummy32;
             }
-            plrNameCache.Add(plr[i]._guid, plr[i]._name); // TODO: set after loadingscreen, after loading cache
+            plrNameCache.Add(plr[i]._guid, plr[i]._name);   // TODO: set after loadingscreen, after loading cache
 
+            recvPacket >> dummy32;                          // bag 1 display id
+            recvPacket >> dummy8;                           // bag 1 inventory type
+            recvPacket >> dummy32;                          // enchant?
+            recvPacket >> dummy32;                          // bag 2 display id
+            recvPacket >> dummy8;                           // bag 2 inventory type
+            recvPacket >> dummy32;                          // enchant?
+            recvPacket >> dummy32;                          // bag 3 display id
+            recvPacket >> dummy8;                           // bag 3 inventory type
+            recvPacket >> dummy32;                          // enchant?
+            recvPacket >> dummy32;                          // bag 4 display id
+            recvPacket >> dummy8;                           // bag 4 inventory type
+            recvPacket >> dummy32;                          // enchant?
         }
         char_found=false;
 
