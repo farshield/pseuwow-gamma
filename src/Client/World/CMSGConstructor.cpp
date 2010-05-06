@@ -101,8 +101,6 @@ void WorldSession::SendCastSpell(uint32 spellid, bool nocheck)
 
     //-- TEMP FIX --// TODO: need a list of spells that is excluded from the check and can always be casted.
     // settable via DefScript?
-    if(spellid==836)
-        known=true;
 
     if( (!known) && (!GetInstance()->GetConf()->disablespellcheck) )
     {
