@@ -540,7 +540,7 @@ void WorldSession::_HandleAuthChallengeOpcode(WorldPacket& recvPacket)
         digest.UpdateBigNumbers(GetInstance()->GetSessionKey(),NULL);
         digest.Finalize();
         WorldPacket auth;
-        auth<<(uint32)(GetInstance()->GetConf()->clientbuild)<<unk<<acc<<unk<<clientseed_uint32<<unk4;
+        auth<<(uint32)(GetInstance()->GetConf()->clientbuild)<<unk<<acc<<unk<<clientseed_uint32<<unk<<unk<<unk<<unk4;
         auth.append(digest.GetDigest(),20);
         auth << (uint32)0; // TODO: this is not correct value, expected: 160 bytes of addon_data
 
