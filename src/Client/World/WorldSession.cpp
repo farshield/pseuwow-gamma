@@ -1056,16 +1056,28 @@ void WorldSession::_HandlePongOpcode(WorldPacket& recvPacket)
 void WorldSession::_HandleTradeStatusOpcode(WorldPacket& recvPacket)
 {
     recvPacket.hexlike();
-    uint8 unk;
-    recvPacket >> unk;
-    if(unk==1)
+    uint32 status;
+    uint64 pguid;
+    recvPacket >> status;
+    logdebug("TRADE: Received status code: %u", status);
+
+    // TODO: Implement this!!
+    switch (status)
     {
-        // TODO: Implement this!!
-        SendChatMessage(CHAT_MSG_SAY,0,"It has no sense trying to trade with me, that feature is not yet implemented!","");
-        WorldPacket pkt;
-        pkt.SetOpcode(CMSG_CANCEL_TRADE);
-        SendWorldPacket(pkt);
+    case TRADE_STATUS_BEGIN_TRADE:
+        recvPacket >> pguid;
+        log("TRADE: Player '%s' attempted to begin a trade.", GetOrRequestPlayerName(pguid));
+        break;
+    default:
+        break;
     }
+
+    WorldPacket pkt;
+    // this should be something other than CMSG_CANCEL_TRADE
+    // but it works to go ahead and cancel since not implemented
+    // MaNGOS doesn't have CMSG_IGNORE_TRADE working right
+    pkt.SetOpcode(CMSG_CANCEL_TRADE);
+    SendWorldPacket(pkt);
 }
 
 void WorldSession::_HandleGroupInviteOpcode(WorldPacket& recvPacket)
