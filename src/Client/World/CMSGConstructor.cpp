@@ -224,4 +224,85 @@ void WorldSession::SendCharCreate(std::string name, uint8 race, uint8 class_, //
     AddSendWorldPacket(wp);
 }
 
+void WorldSession::SendGroupInvite(std::string playername)
+{
+    if(playername.empty())
+        return;
+
+    uint32 rolesmask = 0;
+
+    WorldPacket pkt(CMSG_GROUP_INVITE, playername.size()+1+4);
+    pkt << playername;
+    pkt << rolesmask;
+
+    SendWorldPacket(pkt);
+}
+
+void WorldSession::SendGroupUninviteGuid(uint64 guid, std::string msg)
+{
+    if(guid == 0)
+        return;
+
+    WorldPacket pkt(CMSG_GROUP_UNINVITE_GUID, 8+msg.size()+1);
+    pkt << guid;
+    pkt << msg;
+
+    SendWorldPacket(pkt);
+}
+
+void WorldSession::SendGroupUninvite(std::string playername)
+{
+    if(playername.empty())
+        return;
+
+    WorldPacket pkt(CMSG_GROUP_UNINVITE, playername.size()+1);
+    pkt << playername;
+
+    SendWorldPacket(pkt);
+}
+
+void WorldSession::SendGroupInviteResponse(std::string msg)
+{
+    if(msg.empty())
+        return;
+
+    if (_partyacceptexpire > 0)
+    {
+        if (msg == "accept")
+            SendGroupAccept();
+        else if (msg == "decline")
+            SendGroupDecline();
+    }
+    else
+        log("GROUP: You do not have an invitation pending.");
+}
+
+void WorldSession::SendGroupAccept()
+{
+    _partyacceptexpire = 0;
+    uint32 rolesmask = 0;
+    WorldPacket pkt(CMSG_GROUP_ACCEPT, 4);
+    pkt << rolesmask;
+    SendWorldPacket(pkt);
+    log("GROUP: You have accepted the group invitation.");
+}
+
+void WorldSession::SendGroupDecline()
+{
+    _partyacceptexpire = 0;
+    WorldPacket pkt(CMSG_GROUP_DECLINE, 0);
+    SendWorldPacket(pkt);
+    log("GROUP: You have declined to join the group.");
+}
+
+void WorldSession::SendGroupSetLeader(uint64 guid)
+{
+    if(guid == 0)
+        return;
+
+    WorldPacket pkt(CMSG_GROUP_SET_LEADER, 8);
+    pkt << guid;
+
+    SendWorldPacket(pkt);
+}
 

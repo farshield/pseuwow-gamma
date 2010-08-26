@@ -6,6 +6,7 @@ void _InitDefScriptInterface(void);
 // Usable own internal functions:
 DefReturnResult SCpause(CmdSet&);
 DefReturnResult SCSendChatMessage(CmdSet&);
+DefReturnResult SCGroupCommand(CmdSet&);
 DefReturnResult SCsavecache(CmdSet&);
 DefReturnResult SCemote(CmdSet&);
 DefReturnResult SCfollow(CmdSet&);

@@ -20,6 +20,7 @@ void DefScriptPackage::_InitDefScriptInterface(void)
     AddFunc("follow",&DefScriptPackage::SCfollow);
     AddFunc("savecache",&DefScriptPackage::SCsavecache);
     AddFunc("sendchatmessage",&DefScriptPackage::SCSendChatMessage);
+    AddFunc("group",&DefScriptPackage::SCGroupCommand);
     AddFunc("joinchannel",&DefScriptPackage::SCjoinchannel);
     AddFunc("leavechannel",&DefScriptPackage::SCleavechannel);
     AddFunc("listchannel",&DefScriptPackage::SClistchannel);
@@ -101,6 +102,83 @@ DefReturnResult DefScriptPackage::SCSendChatMessage(CmdSet& Set){
     std::string to=Set.arg[3];
     ((PseuInstance*)parentMethod)->GetWSession()->SendChatMessage(type,lang,msg,to);
     return true;
+}
+
+DefReturnResult DefScriptPackage::SCGroupCommand(CmdSet& Set)
+{
+    WorldSession *ws = ((PseuInstance*)parentMethod)->GetWSession();
+    if ( !ws )
+    {
+        logerror("Invalid Script call: SCGroupCommand: WorldSession not valid");
+        DEF_RETURN_ERROR;
+    }
+
+    if ( Set.arg[0].empty() )
+    {
+        logerror("SCGroupCommand: No command specified.");
+        return false;
+    }
+
+    std::string what = stringToLower(Set.arg[0]);
+    uint64 guid;
+    guid = ws->GetTarget();
+
+    if ( what == "accept" || what == "decline" )
+    {
+        ws->SendGroupInviteResponse(what);
+        return true;
+    }
+    else if( what == "invite" )
+    {
+        ws->SendGroupInvite(Set.arg[1]);
+        return true;
+    }
+    else if ( what == "uninvite")
+    {
+        if ( Set.arg[1].empty() )
+        {
+            if ( guid == 0 )
+            {
+                logerror("SCGroupCommand: Nobody specified to uninvite.");
+                return false;
+            }
+            else
+            {
+                ws->SendGroupUninviteGuid(guid);
+                return true;
+            }
+        }
+        else
+        {
+            ws->SendGroupUninvite(Set.arg[1]);
+            return true;
+        }
+    }
+    else if ( what == "promote")
+    {
+        if ( Set.arg[1].empty() )
+        {
+            if ( guid == 0 )
+            {
+                logerror("SCGroupCommand: New leader not specified.");
+                return false;
+            }
+            else
+            {
+                ws->SendGroupSetLeader(guid);
+                return true;
+            }
+        }
+        else
+        {
+            guid = ws->plrNameCache.GetGuid(Set.arg[1]);
+            ws->SendGroupSetLeader(guid);
+            return true;
+        }
+    }
+
+    logerror("SCGroupCommand: Command not recognized.");
+    return false;
 }
 
 DefReturnResult DefScriptPackage::SCsavecache(CmdSet& Set){

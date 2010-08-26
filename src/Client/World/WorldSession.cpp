@@ -35,6 +35,7 @@ WorldSession::WorldSession(PseuInstance *in)
     _sh.SetAutoCloseSockets(false);
     objmgr.SetInstance(in);
     _lag_ms = 0;
+    _partyacceptexpire = 0;
     //...
 
     in->GetScripts()->RunScriptIfExists("_onworldsessioncreate");
@@ -285,8 +286,13 @@ OpcodeHandler *WorldSession::_GetOpcodeHandlerTable() const
         {SMSG_NAME_QUERY_RESPONSE, &WorldSession::_HandleNameQueryResponseOpcode},
         {SMSG_PONG, &WorldSession::_HandlePongOpcode},
         {SMSG_TRADE_STATUS, &WorldSession::_HandleTradeStatusOpcode},
-        {SMSG_GROUP_INVITE, &WorldSession::_HandleGroupInviteOpcode},
         {SMSG_CHANNEL_NOTIFY, &WorldSession::_HandleChannelNotifyOpcode},
+
+        // group opcodes
+        {SMSG_GROUP_INVITE, &WorldSession::_HandleGroupInviteOpcode},
+        {SMSG_GROUP_UNINVITE, &WorldSession::_HandleGroupUninviteOpcode},
+        {SMSG_GROUP_DECLINE, &WorldSession::_HandleGroupDeclineOpcode},
+        {SMSG_PARTY_COMMAND_RESULT, &WorldSession::_HandlePartyCommandResultOpcode},
 
         // movement opcodes
         {MSG_MOVE_SET_FACING, &WorldSession::_HandleMovementOpcode},
@@ -438,7 +444,9 @@ void WorldSession::_DoTimedActions(void)
             pingtime=clock() + 30*CLOCKS_PER_SEC;
             SendPing(clock());
         }
-        //...
+        // handle party expiration
+        if( _partyacceptexpire != 0 && _partyacceptexpire < clock())
+            SendGroupDecline();
     }
 }
 
@@ -1082,10 +1090,78 @@ void WorldSession::_HandleTradeStatusOpcode(WorldPacket& recvPacket)
 
 void WorldSession::_HandleGroupInviteOpcode(WorldPacket& recvPacket)
 {
-    recvPacket.hexlike();
-    WorldPacket pkt;
-    pkt.SetOpcode(CMSG_GROUP_DECLINE);
-    SendWorldPacket(pkt);
+    uint8 invited;
+    std::string name;
+    uint32 unk1;
+    uint8 count;
+    uint32 unk2;
+
+    recvPacket >> invited;
+    recvPacket >> name;
+    recvPacket >> unk1;
+    recvPacket >> count;
+    recvPacket >> unk2;
+
+    log("GROUP: [%s] has invited you to a group.", name.c_str());
+    _partyacceptexpire = clock() + 60 * CLOCKS_PER_SEC;
+}
+
+void WorldSession::_HandleGroupUninviteOpcode(WorldPacket& recvPacket)
+{
+    log("GROUP: You have been uninvited.");
+    _partyacceptexpire = 0;
+}
+
+void WorldSession::_HandleGroupDeclineOpcode(WorldPacket& recvPacket)
+{
+    std::string name;
+
+    recvPacket >> name;
+
+    log("GROUP: [%s] declines your group invitation.", name.c_str());
+}
+
+void WorldSession::_HandlePartyCommandResultOpcode(WorldPacket& recvPacket)
+{
+    uint32 operation;
+    std::string name;
+    uint32 result;
+    uint32 lfgcooldown;
+
+    recvPacket >> operation;
+    recvPacket >> name;
+    recvPacket >> result;
+    recvPacket >> lfgcooldown;
+
+    switch(result)
+    {
+        case ERR_PARTY_RESULT_OK:
+            break;
+        case ERR_BAD_PLAYER_NAME_S:
+            log("Cannot find player '%s'.", name.c_str());
+            break;
+        case ERR_GROUP_FULL:
+            log("Group is full.");
+            break;
+        case ERR_ALREADY_IN_GROUP_S:
+            log("Already in a group.");
+            break;
+        case ERR_NOT_IN_GROUP:
+            log("You are not in a group.");
+            break;
+        case ERR_NOT_LEADER:
+            log("You are not the group leader.");
+            break;
+        case ERR_PLAYER_WRONG_FACTION:
+            log("Target is unfriendly.");
+            break;
+        case ERR_IGNORING_YOU_S:
+            log("%s is ignoring you.", name.c_str());
+            break;
+        default:
+            logdetail("Unlabeled PartyCommandResult %u received.", result);
+            break;
+    }
 }
 
 void WorldSession::_HandleMovementOpcode(WorldPacket& recvPacket)
