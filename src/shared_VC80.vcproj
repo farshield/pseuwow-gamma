@@ -198,6 +198,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\shared\ProgressBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\shared\ProgressBar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\shared\SysDefs.h"
 				>
 			</File>
@@ -407,7 +415,7 @@
 				<File
 					RelativePath=".\shared\Auth\Hmac.h"
 					>
-				</File>				
+				</File>
 				<File
 					RelativePath=".\shared\Auth\md5.c"
 					>

@@ -48,7 +48,7 @@
 				Optimization="3"
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../shared;../dep/include;../dep/include/zlib;StormLib"
+				AdditionalIncludeDirectories="../shared;../dep/include;../../dep/include;../dep/include/zlib;StormLib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -143,7 +143,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../shared;../dep/include;../dep/include/zlib;StormLib"
+				AdditionalIncludeDirectories="../shared;../dep/include;../../dep/include;../dep/include/zlib;StormLib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -256,146 +256,6 @@
 				RelativePath=".\stuffextract\StuffExtract.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="StormLib"
-			>
-			<File
-				RelativePath=".\stuffextract\StormLib\SCommon.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SCommon.h"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SCompression.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileCompactArchive.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileCreateArchiveEx.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileExtractFile.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileFindFile.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileOpenArchive.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileOpenFileEx.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SFileReadFile.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\SListFile.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\StormLib.h"
-				>
-			</File>
-			<File
-				RelativePath=".\stuffextract\StormLib\StormPort.h"
-				>
-			</File>
-			<Filter
-				Name="wave"
-				>
-				<File
-					RelativePath=".\stuffextract\StormLib\wave\wave.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\wave\wave.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="bzip2"
-				>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\blocksort.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\bzlib.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\bzlib.h"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\bzlib_private.h"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\compress.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\crctable.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\decompress.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\huffman.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\bzip2\randtable.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="pklib"
-				>
-				<File
-					RelativePath=".\stuffextract\StormLib\pklib\crc32_pk.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\pklib\explode.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\pklib\implode.c"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\pklib\pklib.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="huffman"
-				>
-				<File
-					RelativePath=".\stuffextract\StormLib\huffman\huff.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\stuffextract\StormLib\huffman\huff.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
