@@ -61,3 +61,6 @@ Makefile.in
 Makefile
 
 temp/*
+src/dep/lib/debug/*
+src/dep/src/irrlicht/dep/*
+src/dep/src/obj/*
