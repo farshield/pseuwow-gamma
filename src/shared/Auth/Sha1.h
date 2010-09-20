@@ -42,10 +42,14 @@ class Sha1Hash
         uint8 *GetDigest(void) { return mDigest; };
         int GetLength(void) { return SHA_DIGEST_LENGTH; };
 
+		void Sha1Hash::setHash(std::string hash); //manual hash set
+
         BigNumber GetBigNumber();
 
     private:
         SHA_CTX mC;
         uint8 mDigest[SHA_DIGEST_LENGTH];
+
+		uint8 Sha1Hash::hexToDec(char ch); //used in setHash() function
 };
 #endif

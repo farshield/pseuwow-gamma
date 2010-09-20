@@ -63,3 +63,34 @@ void Sha1Hash::Finalize(void)
 {
     SHA1_Final(mDigest, &mC);
 }
+
+uint8 Sha1Hash::hexToDec(char ch)
+{
+	if (ch >= '0' && ch <= '9')
+		ch = ch - '0';
+	if (ch >= 'a' && ch <= 'f')
+		ch = ch - 'a' + 10;
+	if (ch >= 'A' && ch <= 'F')
+		ch = ch - 'A' + 10;
+
+	return ( (uint8) ch);
+}
+
+void Sha1Hash::setHash(std::string hash)
+{
+	uint8 counter = 0;
+
+	char ch1, ch2;
+	uint8 b1, b2;
+
+	for (uint8 i = 0; i < hash.length(); i = i + 2)
+	{
+		ch1 = hash.at(i);
+		ch2 = hash.at(i + 1);
+
+		b1 = hexToDec(ch1);
+		b2 = hexToDec(ch2);
+
+		mDigest[counter++] = (b1 << 4) | b2;
+	}
+}
