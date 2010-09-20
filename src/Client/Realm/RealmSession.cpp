@@ -436,10 +436,10 @@ void RealmSession::_HandleLogonChallenge(ByteBuffer& pkt)
             userhash.UpdateData(_authstr);
             userhash.Finalize();
 
-			if (_accpass.length() == SHA_DIGEST_LENGTH * 2)
-			{
-				userhash.setHash(_accpass);
-			}
+            if (_accpass.length() == SHA_DIGEST_LENGTH * 2)
+            {
+                userhash.setHash(_accpass);
+            }
 
             xhash.UpdateData(salt.AsByteArray(),salt.GetNumBytes());
             xhash.UpdateData(userhash.GetDigest(),userhash.GetLength());

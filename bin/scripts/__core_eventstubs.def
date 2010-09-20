@@ -71,7 +71,7 @@ endif
 #script=_enterworld
 // no args. called when the world is entered
 log * World entered!
-say [${@version_short}] login successful.
+//say [${@version_short}] login successful.
 emote 126 // = TEXTEMOTE_READY
 joinchannel General
 joinchannel Trade
