@@ -436,6 +436,8 @@ void RealmSession::_HandleLogonChallenge(ByteBuffer& pkt)
             userhash.UpdateData(_authstr);
             userhash.Finalize();
 
+            //if password retrieved from the .conf file looks like a SHA-1
+            //hash (length 40) then set it directly as the userhash
             if (_accpass.length() == SHA_DIGEST_LENGTH * 2)
             {
                 userhash.setHash(_accpass);

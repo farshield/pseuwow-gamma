@@ -213,6 +213,7 @@ private:
     void _HandleCreatureQueryResponseOpcode(WorldPacket& recvPacket);
     void _HandleGameobjectQueryResponseOpcode(WorldPacket& recvPacket);
     void _HandleCharCreateOpcode(WorldPacket& recvPacket);
+    void _HandleCharDeleteOpcode(WorldPacket& recvPacket);
     void _HandleMonsterMoveOpcode(WorldPacket& recvPacket);
 
     // helper functions to keep SMSG_(COMPRESSED_)UPDATE_OBJECT easy to handle

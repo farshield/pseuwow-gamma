@@ -354,6 +354,7 @@ OpcodeHandler *WorldSession::_GetOpcodeHandlerTable() const
         {SMSG_CREATURE_QUERY_RESPONSE, &WorldSession::_HandleCreatureQueryResponseOpcode},
         {SMSG_GAMEOBJECT_QUERY_RESPONSE, &WorldSession::_HandleGameobjectQueryResponseOpcode},
         {SMSG_CHAR_CREATE, &WorldSession::_HandleCharCreateOpcode},
+        {SMSG_CHAR_DELETE, &WorldSession::_HandleCharDeleteOpcode},
         {SMSG_MONSTER_MOVE, &WorldSession::_HandleMonsterMoveOpcode},
 
         // table termination
@@ -679,7 +680,8 @@ void WorldSession::_HandleCharEnumOpcode(WorldPacket& recvPacket)
             cx.map_ = mapname;
             _charList.push_back(cx);
 
-            logcustom(0,LGREEN,"## %s (%u) [%s/%s] Map: %s; Zone: %s",
+            logcustom(0,LGREEN,"##[%llu] %s (%u) [%s/%s] Map: %s; Zone: %s",
+                plr[i]._guid,
                 plr[i]._name.c_str(),
                 plr[i]._level,
                 racename,
@@ -1809,6 +1811,35 @@ void WorldSession::_HandleCharCreateOpcode(WorldPacket& recvPacket)
     {
         logerror("Character creation error, response=%u", response);
     }
+    if(SCPDatabase *db = GetInstance()->dbmgr.GetDB("generic_text"))
+    {
+        // convert response number to field name (simple int to string)
+        char buf[20];
+        sprintf(buf,"%u",response);
+        std::string response_str = db->GetString(0, buf); // data are expected to be at index 0
+        log("Response String: '%s'",response_str.c_str());
+    }
+
+    if(PseuGUI *gui = GetInstance()->GetGUI())
+        gui->SetSceneData(ISCENE_CHARSEL_ERRMSG, response);
+}
+
+void WorldSession::_HandleCharDeleteOpcode(WorldPacket& recvPacket)
+{
+    uint8 response;
+	recvPacket >> response;
+
+    if (response == CHAR_DELETE_SUCCESS)
+	{
+		log("Character deleted successfully.");
+		WorldPacket pkt(CMSG_CHAR_ENUM, 0);
+		SendWorldPacket(pkt);
+		logdebug("Requested new CMSG_CHAR_ENUM");
+	}
+	else
+	{
+		logerror("Character deletion error, response=%u", response);
+	}
     if(SCPDatabase *db = GetInstance()->dbmgr.GetDB("generic_text"))
     {
         // convert response number to field name (simple int to string)
